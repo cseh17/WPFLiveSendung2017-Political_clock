@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Political Clock</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="zaehler.css">
+</head>
+<body>
+
+<div class="w3-container">
+    <h1 style="font-size: 3em">CDU</h1>
+
+    <div class="w3-light-grey w3-jumbo">
+        <div id="cdu" class="cdu_prog" style="height:180px;width:0">00:00</div>
+    </div>
+    <br>
+
+</div>
+<div class="w3-container">
+    <h1 style="font-size: 3em">SPD</h1>
+
+    <div class="w3-light-grey w3-jumbo">
+        <div id="spd" class="spd_prog" style="height:180px;width:0">00:00</div>
+    </div>
+    <br>
+    <button id="bcdu" class="w3-button w3-black " style="padding:50px 80px; margin-right: 16px; border-radius: 50px"
+            onclick="move1()">CDU
+    </button>
+    <button id="bspd" class="w3-button w3-red " style="padding:50px 80px; margin-right: 8em; border-radius: 50px"
+            onclick="move2()">SPD
+    </button>
+    <button class="w3-button w3-blue" style="padding:50px 80px; margin-right: 16px; border-radius: 50px"
+            onclick="moderator()">Keiner Redet
+    </button>
+    <button id="br" class="w3-button w3-green" style="padding:50px 80px; border-radius: 50px" onclick="beide()">Beide
+        reden
+    </button>
+</div>
+
+<h7 class="copyright">
+    <footer>
+        <small>&copy; Copyright Krisztian Cseh, Sergej Atamantschuk </br> TH Köln, Medieninformatik Live
+            Studioproduction 2017
+        </small>
+    </footer>
+</h7>
+
+
+<script>
+    var check_spd = 0;
+    var check_cdu = 0;
+    var width_cdu = 0.1;
+    var width_spd = 0.1;
+    var id;
+    var button_cdu = document.getElementById('bcdu');
+    var button_spd = document.getElementById('bspd');
+    var button_br = document.getElementById('br');
+
+    var sc = 0, mc = 0, ss = 0, ms = 0;
+
+    function move1() {
+        button_cdu.disabled = true;
+        button_spd.disabled = false;
+        button_br.disabled = false;
+
+        var elem = document.getElementById("cdu");
+        check_spd = 0;
+        check_cdu = 1;
+        clearInterval(id);
+        id = setInterval(frame, 1000);
+        function frame() {
+            if (check_cdu == 1) {
+                timerCdu();
+                if (width_cdu >= 100) {
+                    clearInterval(id);
+                } else {
+                    width_cdu = width_cdu + 0.1;
+                    elem.style.width = width_cdu + '%';
+                }
+            } else {
+                clearInterval(id);
+            }
+        }
+    }
+    function move2() {
+        button_cdu.disabled = false;
+        button_spd.disabled = true;
+        button_br.disabled = false;
+        var elem = document.getElementById("spd");
+        check_spd = 1;
+        check_cdu = 0;
+        clearInterval(id);
+        id = setInterval(frame, 1000);
+        function frame() {
+            if (check_spd == 1) {
+                timerSPD();
+                if (width_spd >= 100) {
+                    clearInterval(id);
+                } else {
+                    width_spd = width_spd + 0.1;
+                    elem.style.width = width_spd + "%";
+                }
+            } else {
+                clearInterval(id);
+            }
+        }
+    }
+
+    function moderator() {
+        check_cdu = 0;
+        check_spd = 0;
+        button_cdu.disabled = false;
+        button_spd.disabled = false;
+        button_br.disabled = false;
+    }
+
+    function beide() {
+        button_cdu.disabled = false;
+        button_spd.disabled = false;
+        button_br.disabled = true;
+        check_cdu = 1;
+        check_spd = 1;
+        var elem_cdu = document.getElementById("cdu");
+        var elem_spd = document.getElementById("spd");
+        clearInterval(id);
+        var id2 = setInterval(frame, 1000);
+
+        function frame() {
+            if (check_spd == 1 && check_cdu == 1) {
+                timerCdu();
+                timerSPD();
+                if (width_spd >= 100) {
+                    clearInterval(id2);
+                } else {
+                    width_cdu = width_cdu + 0.1;
+                    width_spd = width_spd + 0.1;
+                    elem_cdu.style.width = width_cdu + "%";
+                    elem_spd.style.width = width_spd + "%";
+                }
+            } else {
+                clearInterval(id2);
+            }
+        }
+    }
+
+    function timerCdu() {
+        sc++;
+        sc = checkTime(sc);
+        if (sc == 60) {
+            sc = 0+ '0';
+            mc++;
+            mc = checkTime(mc);
+        }
+        var elem_cdu = document.getElementById("cdu");
+        elem_cdu.innerHTML = mc + ":" + sc;
+    }
+
+    function timerSPD() {
+        ss++;
+        ss = checkTime(ss);
+        if (ss == 60) {
+            ss = 0 + '0';
+            ms++;
+            ms = checkTime(ms);
+        }
+        var elem_spd = document.getElementById("spd");
+        elem_spd.innerHTML = ms + ":" + ss;
+    }
+
+    function checkTime(i) {
+        if (i < 10) {
+            i = "0" + i;
+        }
+        return i;
+    }
+</script>
+</body>
+</html>
